@@ -12,8 +12,9 @@ test('workspace/site/report reads reject unauthenticated and foreign members',as
     await pageA.getByLabel('Name').fill('Workspace A');
     await pageA.getByLabel('Email').fill('tenant-a-'+Date.now()+'@example.invalid');
     await pageA.getByLabel('Password').fill('tenant-safety-password-123');
-    await pageA.getByRole('button',{name:'Register'}).click();
-    await expect(pageA).toHaveURL(/\/console/);
+    const [signupA]=await Promise.all([pageA.waitForResponse(r=>r.url().includes('/api/auth/sign-up/email')),pageA.getByRole('button',{name:'Register'}).click()]);
+    expect(signupA.ok(),await signupA.text()).toBe(true);
+    await expect(pageA).toHaveURL(/\/console/,{timeout:15000});
     await pageA.getByLabel('New workspace').fill('Tenant A workspace');
     await pageA.getByRole('button',{name:'Create workspace'}).click();
     await expect(pageA.getByText('Workspace created')).toBeVisible();
@@ -29,8 +30,9 @@ test('workspace/site/report reads reject unauthenticated and foreign members',as
     await pageB.getByLabel('Name').fill('Workspace B');
     await pageB.getByLabel('Email').fill('tenant-b-'+Date.now()+'@example.invalid');
     await pageB.getByLabel('Password').fill('tenant-safety-password-123');
-    await pageB.getByRole('button',{name:'Register'}).click();
-    await expect(pageB).toHaveURL(/\/console/);
+    const [signupB]=await Promise.all([pageB.waitForResponse(r=>r.url().includes('/api/auth/sign-up/email')),pageB.getByRole('button',{name:'Register'}).click()]);
+    expect(signupB.ok(),await signupB.text()).toBe(true);
+    await expect(pageB).toHaveURL(/\/console/,{timeout:15000});
     const foreignSites=await b.request.get('/api/v1/sites?workspaceId='+w);
     expect(foreignSites.status()).toBe(403);
     const foreignReport=await b.request.get('/api/v1/reports/overview?siteId='+s+'&from=2026-10-01&to=2026-10-31');
