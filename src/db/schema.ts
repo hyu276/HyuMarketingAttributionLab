@@ -120,7 +120,7 @@ export const couponCodes=pgTable('campaign_coupon_codes',{
   campaignId:uuid('campaign_id').notNull().references(()=>campaigns.id),
   code:varchar('code',{length:90}).notNull(),
   active:boolean('active').notNull().default(true),
-},t=>[index('coupons_site_code_idx').on(t.siteId,t.code)]);
+},t=>[uniqueIndex('coupons_site_code_unique').on(t.siteId,t.code)]);
 export const imports=pgTable('imports',{
   id:uuid('id').primaryKey().defaultRandom(),
   siteId:uuid('site_id').notNull().references(()=>sites.id),

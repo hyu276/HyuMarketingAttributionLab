@@ -1,6 +1,6 @@
 import { parse } from 'csv-parse/sync';
 import { createHash } from 'node:crypto';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { z } from 'zod';
 import { checkoutLinks, costs, imports, orders, campaigns } from '@/db/schema';
 import { db } from '@/db/client';
@@ -25,7 +25,6 @@ const spendRow=z.object({
   amount:z.coerce.number().int().nonnegative().safe(),
 });
 type OrderRow=z.infer<typeof orderRow>;
-type SpendRow=z.infer<typeof spendRow>;
 export type ImportKind='orders'|'spend';
 export type Preview={kind:ImportKind; count:number; errors:{row:number;reason:string}[]; digest:string; valid:boolean};
 function parsedRows(csv:string):Record<string,string>[] {
@@ -87,13 +86,15 @@ export async function commitImport(siteId:string,kind:ImportKind,csv:string,dige
           if(!link || link.usedAt || link.expiresAt.getTime()<Date.now())
             throw new ApiError(400,'BAD_CHECKOUT_TOKEN','Checkout token invalid, expired or already used');
           checkoutLinkId=link.id;
-          await tx.update(checkoutLinks).set({usedAt:new Date()}).where(eq(checkoutLinks.id,link.id));
+          const redeemed=await tx.update(checkoutLinks).set({usedAt:new Date()})
+            .where(and(eq(checkoutLinks.id,link.id),isNull(checkoutLinks.usedAt))).returning({id:checkoutLinks.id});
+          if(!redeemed.length)throw new ApiError(409,'CHECKOUT_REPLAY','Checkout token already redeemed');
         }
         const net=r.gross_item_revenue-r.discount_amount-r.refunded_amount;
         const row={
           siteId,externalOrderId:r.order_id,orderedAt:new Date(r.ordered_at),currency:r.currency,
           status:r.status,gross:r.gross_item_revenue,discount:r.discount_amount,refunded:r.refunded_amount,
-          net,checkoutLinkId, couponCode:r.discount_code || null,
+          net,checkoutLinkId, couponCode:r.discount_code?.toUpperCase() || null,
         };
         await tx.insert(orders).values(row)
           .onConflictDoUpdate({target:[orders.siteId,orders.externalOrderId],set:row});

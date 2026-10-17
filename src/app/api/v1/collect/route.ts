@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { and, eq, desc } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '@/db/client';
 import { sites, visitors, sessions, events, touchpoints, campaigns } from '@/db/schema';
@@ -14,7 +14,7 @@ const schema=z.object({
   consent:z.object({analytics:z.literal(true),policy_version:z.string().max(40)}),
   utm:z.object({source:z.string().max(120).optional(),medium:z.string().max(120).optional(),
     campaign:z.string().max(120).optional(),id:z.string().max(120).optional()}).optional(),
-  properties:z.record(z.string().max(50),z.union([z.string().max(150),z.number(),z.boolean()])).optional(),
+  properties:z.object({product_id:z.string().max(100).optional(),product_category:z.string().max(100).optional()}).strict().optional(),
 });
 const recent=new Map<string,{count:number;reset:number}>();
 function throttle(key:string){

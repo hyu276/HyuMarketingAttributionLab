@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 // Temporary CI-only materialization of lockfile and generated migrations for review.
 // No secrets: only package-lock and schema/migration files are emitted.
-const fs=require('node:fs');
-const path=require('node:path');
+import fs from 'node:fs';
+import path from 'node:path';
 const rootFiles=['package-lock.json'];
 function collect(dir) {
   if(!fs.existsSync(dir))return;
