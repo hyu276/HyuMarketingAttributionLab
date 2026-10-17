@@ -1,36 +1,45 @@
 # Hyu Marketing Attribution Lab
 
-Explainable, rule-based marketing attribution. **Developer preview, not a production SaaS.**
+An explainable, local-first marketing attribution application. **Full-stack MVP implementation candidate; not production-certified.** PR #2 contains backend/data collection/auth/reporting modules and the established Hyu Anti Vibe Code slop design contract. No public backend has been deployed.
 
-The /lab route compares first-touch vs last-non-direct touch on a fixed synthetic journey. The /utm route builds normalized campaign URLs. Neither records real user behavior. Domain calculations have independent Node tests.
+## Features implemented in code
 
-A draft PostgreSQL schema and Docker Compose config are provided, but authentication, migrations, collector, imports and database-backed reports are not implemented.
+- Next.js App Router workspace console, Better Auth sessions, admin/analyst membership boundaries.
+- Site/campaign/UTM registry and client UTM URL builder.
+- Consent-gated first-party tracking SDK with public site collector.
+- Trusted checkout token minting for a configured server-to-server demo integration.
+- Order and ad spend CSV preview + commit, stable idempotency keys.
+- First-touch and last-non-direct attribution, coupon fallback, unassigned reporting.
+- Site-scoped reports, funnel event counts, model comparison and sanitized CSV export.
+- Drizzle/PostgreSQL schema draft, automated lint/type/build, migration smoke, unit and E2E tests.
 
-## Development setup (not yet verified)
+## Local Quick Start
 
-Requirements: Node.js 22, pnpm through corepack, network-accessible dependency registry.
+Preconditions: Node.js 22, npm (or pnpm after its lockfile has been generated and reviewed), Docker Engine + Compose, a network-enabled package registry. \`BETTER_AUTH_SECRET\` and \`CHECKOUT_SERVER_KEY\` must be independently generated random secrets at least 32 characters each.
 
-1. Run: corepack enable
-2. Run: pnpm install
-3. Run: pnpm dev
-4. Visit http://localhost:3000
+1. Copy \`.env.example\` to \`.env.local\` and replace *all* placeholder secrets.
+2. Export the chosen \`POSTGRES_PASSWORD\` from \`.env.local\` to your terminal, or invoke \`docker compose --env-file .env.local up -d db\`.
+3. Run \`npm install\` (until verified pnpm lockfile exists).
+4. Run \`npm run db:generate\`, review generated SQL, and then \`npm run db:migrate\`.
+5. Run \`npm run dev\`; open http://localhost:3000/login.
+6. Sign up locally; create a workspace, a site with hostname \`localhost\`, and a campaign.
+7. To test consent events, open /store?site_key=<site public key>, then explicitly Accept or Reject tracking.
+8. To test real report queries, use the admin console to preview and commit valid, synthetic order/spend CSV files. For a verified order journey, a **trusted server** must first mint a checkout token via its secret; browsers may not mint one.
 
-IMPORTANT: The pnpm lockfile is NOT present/verified. Resolve and commit a reviewed lockfile before claiming reproducibility. Do not use the optional database compose file without local-only POSTGRES_PASSWORD and DATABASE_URL.
+## Verification
 
-## Dependency-free checks
+- \`npm run lint\`
+- \`npm run typecheck\`
+- \`npm test\`
+- \`npm run test:integration\` (requires migrated test PostgreSQL)
+- \`npm run build\`
+- \`npm run test:e2e\` (requires Playwright Chromium)
+- \`python3 scripts/check_repository_rules.py\`
 
-- node --experimental-strip-types --test tests/unit/*.test.ts
-- python3 scripts/check_repository_rules.py
+CI runs these on a disposable GitHub PostgreSQL 16 service. Only report PASS for a check actually verified against the latest commit. Existing GitHub Actions workflow starts with \`npm install\`; a lockfile is still a release blocker.
 
-## Documentation
+## Scope limitations
 
-- [Agent rules](AGENTS.md)
-- [Repository rules](repository-rules/README.md)
-- [Hyu Anti Vibe Code slop design standard](repository-rules/02-UI-UX-ANTI-SLOP.md)
-- [Product](docs/PRODUCT.md) and [Design direction](docs/DESIGN.md)
-- [Measurement methodology](docs/measurement-methodology.md)
-- [Architecture](docs/architecture.md) and [Current status](docs/implementation-status.md)
+No production email verification/recovery, ad-platform OAuth, multiple currency conversion, pixel-free causal inference, secure cross-device identity, distributed collector rate limiting, public cloud deployment or verified legal policy. The /lab route uses conspicuously synthetic fixtures to teach attribution; /console uses database-backed authorized data when configured.
 
-## Not implemented
-
-Auth/RBAC, persistent campaigns, consent SDK, public event collector, server-verified checkout/order linking, CSV imports, cost reports, attribution persistence, automated dashboard aggregates, full Next/DB/E2E/build verification or deployment. Never present demonstration values as real advertising ROI.
+Read [Product](docs/PRODUCT.md), [Design](docs/DESIGN.md), [Implementation status](docs/implementation-status.md), [API contracts](docs/API.md), [Feature specs](specs/INDEX.md), and [Repository rules](repository-rules/README.md).

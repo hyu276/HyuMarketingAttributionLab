@@ -9,7 +9,8 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await page.getByRole('button',{name:'Register'}).click();
   await expect(page).toHaveURL(/\/console/,{timeout:30000});
   await page.getByLabel('New workspace').fill('Test commerce workspace');
-  await page.getByRole('button',{name:'Create workspace'}).click();
+  const [response]=await Promise.all([page.waitForResponse(r=>r.url().includes('/api/v1/workspaces')&&r.request().method()==='POST'),page.getByRole('button',{name:'Create workspace'}).click()]);
+  expect(response.status(),await response.text()).toBe(201);
   await expect(page.getByText('Workspace created')).toBeVisible();
   await page.getByLabel('Site name').fill('Demo Commerce');
   await page.getByLabel('Allowed hostname').fill('localhost');

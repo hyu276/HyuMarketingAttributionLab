@@ -45,6 +45,8 @@ jobs:
         run: npm run db:migrate
       - name: Database integration and CSV/report tests
         run: npm run test:integration
+      - name: Emit reproducibility artifacts for PR review
+        run: node scripts/emit-ci-artifacts.cjs
       - name: Build Next.js
         run: npm run build
       - name: Install Chromium browser
