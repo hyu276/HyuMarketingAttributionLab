@@ -43,3 +43,8 @@ CI runs these on a disposable GitHub PostgreSQL 16 service. Only report PASS for
 No production email verification/recovery, ad-platform OAuth, multiple currency conversion, pixel-free causal inference, secure cross-device identity, distributed collector rate limiting, public cloud deployment or verified legal policy. The /lab route uses conspicuously synthetic fixtures to teach attribution; /console uses database-backed authorized data when configured.
 
 Read [Product](docs/PRODUCT.md), [Design](docs/DESIGN.md), [Implementation status](docs/implementation-status.md), [API contracts](docs/API.md), [Feature specs](specs/INDEX.md), and [Repository rules](repository-rules/README.md).
+
+
+## Netlify hosting target
+
+The owner selected **Netlify**, not Vercel, for hosting this Lab. A separate project `hyu-marketing-attribution-lab` exists on the Netlify Free team, but it has **not yet been deployed**. See [Netlify setup and launch gates](docs/NETLIFY-DEPLOYMENT.md) for Git connection, persistent PostgreSQL, required environment variables and safe integration with the two existing websites. Do not interpret Netlify project creation as a published backend.

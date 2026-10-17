@@ -57,3 +57,13 @@ Never treat proposed decisions as owner-approved production policy.
 - Alternatives: pin `pnpm-lock.yaml` using a verified Corepack/pnpm install in CI and migrate after owner approval. Do not maintain two divergent lockfiles.
 - Costs/tradeoffs: npm may be slower/differ from pnpm in workspace behavior. For a single Next app this is reversible, but document any package manager change and revalidate all CI gates.
 - Revisit: User elects pnpm or establishes verified migration. Never call this change owner-approved until confirmed.
+
+## ADR-006: Netlify as intended Next.js host (owner-directed)
+
+- Date: 2026-10-17.
+- Status: Accepted for target platform; launch conditions OPEN.
+- Decision: Prefer a separate Netlify Free site for Marketing Attribution Lab. Do not repurpose the existing hyupremium Netlify project, and do not use Vercel for the Lab.
+- Why: Explicit owner choice. Netlify's modern OpenNext adapter supports Next.js App Router and API routes without rewriting the stack.
+- Boundaries: An empty Netlify site does not make the app live. Production requires a persistent Postgres connection, secrets in Functions/Builds environment, correct auth HTTPS origin, Git integration, consent/legal approval and launch security gates.
+- Costs: Free team confirmed; no paid service or database was provisioned. A separate database may have usage charges and must be approved first.
+- Revisit: Managed database choice, Git connection, preview results and approved public launch.
