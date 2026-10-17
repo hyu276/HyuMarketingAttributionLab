@@ -28,3 +28,9 @@ No GA4/Ads API OAuth, multi-currency conversion, production cloud, incremental/c
 ## Latest-head verification requirement
 
 Do not call the project fully verified until the GitHub workflow on the latest commit passes npm ci, lint, typecheck, domain, PostgreSQL integration, migration drift, Next production build and Playwright E2E. Browser review covers functional paths but not a full WCAG audit. Production privacy policy, retention configuration, recovery email, distributed throttling and legitimate commerce backend integration remain pending.
+
+## Observed final-head CI (6e6f21c6)
+
+- GitHub Actions [Fullstack build and database smoke run 39034410067](https://github.com/hyu276/HyuMarketingAttributionLab/actions/runs/39034410067): PASSED on commit 6e6f21c6. npm ci, ESLint, TypeScript, unit tests, checked-in Drizzle migration drift check, migration to disposable PostgreSQL 16, database integration tests, Next.js production build, Playwright E2E (5/5).
+- GitHub Actions [Domain tests and documentation integrity run 39034410065](https://github.com/hyu276/HyuMarketingAttributionLab/actions/runs/39034410065): PASSED on the same commit.
+- CI test evidence does not constitute a production security audit, full WCAG certification, real-person consent approval or cloud deployment.
