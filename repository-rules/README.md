@@ -9,7 +9,7 @@ These rules define the engineering contract for **Hyu Marketing Attribution Lab*
 | File | Responsibility |
 |---|---|
 | [01-ROADMAP.md](01-ROADMAP.md) | MVP requirements, P0-P7 order, risks, measurable exit criteria |
-| [02-UI-UX-ANTI-SLOP.md](02-UI-UX-ANTI-SLOP.md) | Product-specific UI, Uizze + Impeccable method, accessibility |
+| [02-UI-UX-ANTI-SLOP.md](02-UI-UX-ANTI-SLOP.md) | Product-specific UI, Hyu five-principle method with Uizze + Impeccable support, accessibility |
 | [03-ARCHITECTURE-CODE.md](03-ARCHITECTURE-CODE.md) | Modular boundaries, performance, DX, code style |
 | [04-ATTRIBUTION-DATA.md](04-ATTRIBUTION-DATA.md) | UTM, event/session/order semantics, attribution and money |
 | [05-SECURITY-PRIVACY.md](05-SECURITY-PRIVACY.md) | Consent, auth, multi-tenancy, abuse control, data handling |

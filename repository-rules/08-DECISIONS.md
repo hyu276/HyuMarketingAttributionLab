@@ -47,3 +47,13 @@ Record important decisions here with date, rationale, alternatives, tradeoffs an
 `ADR-### | Date | Status: Proposed/Accepted/Superseded | Context | Decision | Alternatives rejected | Eight-dimension tradeoff where relevant | Validation evidence | Owner | Revisit trigger`.
 
 Never treat proposed decisions as owner-approved production policy.
+
+## ADR-005: npm ci for verified reproducible dependencies (proposal to owner)
+
+- Date: 2026-10-17
+- Status: Proposed, bounded deviation from roadmap default pnpm.
+- Decision: Commit the GitHub-generated `package-lock.json` and use `npm ci` in local quick start and CI. The project originally proposed pnpm but the build host did not have pnpm; GitHub Actions successfully installed and validated the npm dependency tree and Drizzle migrations.
+- Why: Explicit reproducible dependency versions, observable PostgreSQL and E2E proof now, avoiding an unverified lockfile; no new host provider or paid dependency.
+- Alternatives: pin `pnpm-lock.yaml` using a verified Corepack/pnpm install in CI and migrate after owner approval. Do not maintain two divergent lockfiles.
+- Costs/tradeoffs: npm may be slower/differ from pnpm in workspace behavior. For a single Next app this is reversible, but document any package manager change and revalidate all CI gates.
+- Revisit: User elects pnpm or establishes verified migration. Never call this change owner-approved until confirmed.
