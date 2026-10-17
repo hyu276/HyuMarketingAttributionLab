@@ -15,7 +15,7 @@ An explainable, local-first marketing attribution application. **Full-stack MVP 
 
 ## Local Quick Start
 
-Preconditions: Node.js 22, npm (or pnpm after its lockfile has been generated and reviewed), Docker Engine + Compose, a network-enabled package registry. \`BETTER_AUTH_SECRET\` and \`CHECKOUT_SERVER_KEY\` must be independently generated random secrets at least 32 characters each.
+Preconditions: Node.js 22, npm with the checked-in package-lock.json, Docker Engine + Compose, a network-enabled package registry. \`BETTER_AUTH_SECRET\` and \`CHECKOUT_SERVER_KEY\` must be independently generated random secrets at least 32 characters each.
 
 1. Copy \`.env.example\` to \`.env.local\` and replace *all* placeholder secrets.
 2. Export the chosen \`POSTGRES_PASSWORD\` from \`.env.local\` to your terminal, or invoke \`docker compose --env-file .env.local up -d db\`.

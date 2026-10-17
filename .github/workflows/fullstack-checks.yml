@@ -32,21 +32,21 @@ jobs:
         with:
           node-version: '22'
       - name: Resolve pinned dependencies
-        run: npm install --no-audit --no-fund
+        run: npm ci --no-audit --no-fund
       - name: ESLint
         run: npm run lint
       - name: TypeScript
         run: npm run typecheck
       - name: Domain tests
         run: npm test
-      - name: Generate migration from tracked schema (review before production)
-        run: npm run db:generate
+      - name: Assert checked-in migrations match declared schema
+        run: |
+          npm run db:generate
+          test -z "$(git status --porcelain -- drizzle/)"
       - name: Apply migration to ephemeral Postgres
         run: npm run db:migrate
       - name: Database integration and CSV/report tests
         run: npm run test:integration
-      - name: Emit reproducibility artifacts for PR review
-        run: node scripts/emit-ci-artifacts.mjs
       - name: Build Next.js
         run: npm run build
       - name: Install Chromium browser

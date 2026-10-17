@@ -10,6 +10,8 @@ type Report={
   context:{generatedAt:string;timezone:string;model:string};
   totals:{observedOrders:number;observedRevenueVnd:number;verifiedAttributedRevenueVnd:number;unassignedOrders:number;spendVnd:number;roas:number|null};
   campaigns:{id:string;name:string;attributedRevenueVnd:number;spendVnd:number|null;roas:number|null}[];
+  sources:{source:string;basis:string;orders:number;revenue:number}[];
+  funnel:Record<string,number>;
   orders:{orderId:string;sourceLabel:string;netRevenueVnd:number;attribution:{basis:string}}[];
 };
 const money=(n:number)=>new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND',maximumFractionDigits:0}).format(n);
@@ -28,6 +30,7 @@ export function ConsoleClient(){
   const [workspaceName,setWorkspaceName]=useState(''),[siteName,setSiteName]=useState(''),[domain,setDomain]=useState('localhost');
   const [name,setName]=useState(''),[utmId,setUtmId]=useState(''),[source,setSource]=useState('facebook'),[medium,setMedium]=useState('paid_social');
   const [from,setFrom]=useState('2026-10-01'),[to,setTo]=useState('2026-10-31'),[model,setModel]=useState('first_touch');
+  const [memberEmail,setMemberEmail]=useState(''),[memberRole,setMemberRole]=useState('analyst');
   const [kind,setKind]=useState<'orders'|'spend'>('orders'),[csv,setCsv]=useState(''),[digest,setDigest]=useState('');
   const [preview,setPreview]=useState<{valid:boolean;count:number;errors:{row:number;reason:string}[]}|null>(null);
   const [error,setError]=useState(''),[message,setMessage]=useState('');
@@ -47,6 +50,9 @@ export function ConsoleClient(){
   async function createWorkspace(e:FormEvent){e.preventDefault();await guarded(async()=>{
     const result=await request<{workspace:{id:string}}>('/api/v1/workspaces',{name:workspaceName});
     await reloadWorkspaces();setWorkspaceId(result.workspace.id);setMessage('Workspace created');setWorkspaceName('');
+  });}
+  async function addMember(e:FormEvent){e.preventDefault();await guarded(async()=>{
+    await request('/api/v1/members',{workspaceId,email:memberEmail,role:memberRole});setMessage('Member added');setMemberEmail('');
   });}
   async function createSite(e:FormEvent){e.preventDefault();await guarded(async()=>{
     const result=await request<{site:Site}>('/api/v1/sites',{workspaceId,name:siteName,domain});
@@ -82,6 +88,7 @@ export function ConsoleClient(){
         {admin&&<form className="inline-form" onSubmit={createSite}><label>Site name<input required value={siteName} onChange={e=>setSiteName(e.target.value)}/></label>
           <label>Allowed hostname<input required value={domain} onChange={e=>setDomain(e.target.value)}/></label>
           <button className="button button-secondary">Add site</button></form>}</>}
+      {workspaceId&&admin&&<form className="inline-form" onSubmit={addMember}><label>Add registered member email<input type="email" required value={memberEmail} onChange={e=>setMemberEmail(e.target.value)}/></label><label>Role<select value={memberRole} onChange={e=>setMemberRole(e.target.value)}><option value="analyst">Analyst (read only)</option><option value="admin">Admin</option></select></label><button className="button button-secondary">Add member</button></form>}
       {site&&<p className="micro-text">Public site key: <code>{site.publicKey}</code> · <Link href={'/store?site_key='+encodeURIComponent(site.publicKey)}>Open tracking sandbox</Link></p>}
     </section>
     {siteId&&<><section className="panel"><h2>2. Campaign registry</h2>
@@ -99,6 +106,7 @@ export function ConsoleClient(){
       <section className="panel"><h2>3. Trusted data imports</h2><p>Preview validates CSV rows before the admin can commit.</p>
         {admin?<><label>Import kind<select value={kind} onChange={e=>{setKind(e.target.value as 'orders'|'spend');setPreview(null);}}>
           <option value="orders">Orders</option><option value="spend">Ad spend</option></select></label>
+          <label>Upload CSV file<input type="file" accept=".csv,text/csv" onChange={e=>{const file=e.target.files?.[0];if(file)void file.text().then(text=>{setCsv(text);setPreview(null);});}}/></label>
           <label>CSV data<textarea rows={6} value={csv} onChange={e=>{setCsv(e.target.value);setPreview(null);}}/></label>
           <div className="action-row"><button type="button" disabled={!csv} className="button button-secondary" onClick={()=>void validateCsv()}>Preview CSV</button>
             <button type="button" disabled={!preview?.valid} className="button button-primary" onClick={()=>void importCsv()}>Commit import</button></div>
@@ -126,6 +134,14 @@ export function ConsoleClient(){
           <div className="table-scroll"><table><thead><tr><th>Campaign</th><th>Attribution revenue</th><th>Spend</th><th>ROAS</th></tr></thead><tbody>
             {report.campaigns.map(c=><tr key={c.id}><td>{c.name}</td><td className="number">{money(c.attributedRevenueVnd)}</td>
               <td className="number">{c.spendVnd===null?'N/A':money(c.spendVnd)}</td><td className="number">{c.roas===null?'N/A':c.roas.toFixed(2)+'x'}</td></tr>)}
+          </tbody></table></div>
+          <div className="section-heading"><h3>Acquisition attribution</h3><p>One credit bucket per order per selected model.</p></div>
+          <div className="table-scroll"><table><thead><tr><th>Source</th><th>Evidence basis</th><th>Orders</th><th>Attributed revenue</th></tr></thead><tbody>
+            {report.sources.map((x,i)=><tr key={i}><td>{x.source}</td><td>{x.basis}</td><td>{x.orders}</td><td className="number">{money(x.revenue)}</td></tr>)}
+          </tbody></table></div>
+          <div className="section-heading"><h3>Observed funnel events</h3><p>Events are incomplete and not equal to customers.</p></div>
+          <div className="table-scroll"><table><thead><tr><th>Event</th><th>Observed count</th></tr></thead><tbody>
+            {Object.entries(report.funnel).map(([name,count])=><tr key={name}><td>{name}</td><td>{count}</td></tr>)}
           </tbody></table></div>
           <div className="section-heading"><h3>Source provenance</h3><p>Trusted orders only.</p></div>
           <div className="table-scroll"><table><thead><tr><th>Order</th><th>Attributed source</th><th>Evidence</th><th>Net revenue</th></tr></thead><tbody>

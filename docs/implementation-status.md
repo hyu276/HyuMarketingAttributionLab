@@ -24,3 +24,7 @@ This repo contains a substantial **local-first full-stack implementation candida
 ## Explicit non-goals
 
 No GA4/Ads API OAuth, multi-currency conversion, production cloud, incremental/causal ROAS claims, cross-device identity or probabilistic attribution. No production claim without legal/privacy review and full negative-case testing.
+
+## Latest-head verification requirement
+
+Do not call the project fully verified until the GitHub workflow on the latest commit passes npm ci, lint, typecheck, domain, PostgreSQL integration, migration drift, Next production build and Playwright E2E. Browser review covers functional paths but not a full WCAG audit. Production privacy policy, retention configuration, recovery email, distributed throttling and legitimate commerce backend integration remain pending.

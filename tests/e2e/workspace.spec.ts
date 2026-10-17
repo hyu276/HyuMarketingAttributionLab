@@ -20,5 +20,15 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await page.getByLabel('UTM ID').fill('cmp_autumn_e2e');
   await page.getByRole('button',{name:'Save campaign'}).click();
   await expect(page.getByText('Campaign created')).toBeVisible();
-  await expect(page.getByRole('cell',{name:'Autumn Laptop'})).toBeVisible();
+  await expect(page.getByRole('cell',{name:'Autumn Laptop'}).first()).toBeVisible();
+  const csv='order_id,ordered_at,status,currency,gross_item_revenue,discount_amount,refunded_amount,checkout_token,discount_code\nORD-E2E-001,2026-10-06T12:00:00Z,paid,VND,1000000,100000,0,,';
+  await page.getByLabel('CSV data').fill(csv);
+  await page.getByRole('button',{name:'Preview CSV'}).click();
+  await expect(page.getByText('1 rows, ready')).toBeVisible();
+  await page.getByRole('button',{name:'Commit import'}).click();
+  await expect(page.getByText('1 rows imported')).toBeVisible();
+  await expect(page.getByRole('cell',{name:'ORD-E2E-001'})).toBeVisible();
+  await page.getByRole('button',{name:'Preview CSV'}).click();
+  await page.getByRole('button',{name:'Commit import'}).click();
+  await expect(page.getByText('No change: identical import previously committed')).toBeVisible();
 });
