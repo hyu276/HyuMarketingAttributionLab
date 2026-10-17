@@ -14,6 +14,7 @@
 ## Observed checks
 
 - Independent Node 22 TypeScript unit tests: 9/9 PASS in authoring workspace.
+- GitHub Actions run 39013420326: PASS for standalone domain tests and repository rules integrity on PR #2. This workflow does not run the Next build, PostgreSQL, auth or E2E.
 - Next install, typecheck, lint, build: NOT RUN (pnpm and dependencies unavailable).
 - Docker/Postgres/migrations and Playwright: NOT RUN (Docker/browser unavailable).
 - Dependency version compatibility and pnpm lockfile: UNVERIFIED.
