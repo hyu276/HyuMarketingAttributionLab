@@ -1,0 +1,51 @@
+name: Fullstack build and database smoke
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  build-and-db:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: mal_local
+          POSTGRES_PASSWORD: ci_test_only_password
+          POSTGRES_DB: mal_dev
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U mal_local -d mal_dev"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 8
+    env:
+      DATABASE_URL: postgresql://mal_local:ci_test_only_password@127.0.0.1:5432/mal_dev
+      BETTER_AUTH_URL: http://localhost:3000
+      BETTER_AUTH_SECRET: ci_test_only_secret_replace_in_real_environment_01234567
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Resolve pinned dependencies
+        run: npm install --no-audit --no-fund
+      - name: ESLint
+        run: npm run lint
+      - name: TypeScript
+        run: npm run typecheck
+      - name: Domain tests
+        run: npm test
+      - name: CSV and report tests
+        run: npm run test:integration
+      - name: Generate migration from tracked schema (review before production)
+        run: npm run db:generate
+      - name: Apply migration to ephemeral Postgres
+        run: npm run db:migrate
+      - name: Build Next.js
+        run: npm run build
+      - name: Governance integrity
+        run: python3 scripts/check_repository_rules.py

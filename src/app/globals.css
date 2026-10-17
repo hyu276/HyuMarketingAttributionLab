@@ -122,3 +122,15 @@ select { min-width: 178px; }
 @media (max-width: 760px) { .shell { display: block; } .sidebar { padding: 15px 17px; gap: 12px; } .brand { align-self: flex-start; } .nav-kicker, .sidebar-status { display: none; } .main-nav { flex-direction: row; overflow-x: auto; } .nav-link { white-space: nowrap; padding: 9px 10px; } .topbar { height: 52px; } .hero, .pipeline { grid-template-columns: 1fr; } .pipeline > div { border-right: none; border-bottom: 1px solid var(--line); } .pipeline > div:last-child { border-bottom: none; } .section-heading { flex-direction: column; } .content { padding: 24px 17px 40px; } .heading-large h1 { max-width: none; } }
 @media (max-width: 430px) { .topbar-context { max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .environment-label { font-size: 9px; } .panel, .hero-proof, .pipeline > div { padding: 18px; } .form-grid { grid-template-columns: 1fr; } .journey-item { gap: 9px; } .journey-item .tag { font-size: 9px; } .action-row > * { width: 100%; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; } }
+
+.inline-form { display:flex; flex-wrap:wrap; align-items:end; gap:12px; margin:22px 0; }
+.inline-form label { min-width:min(100%,240px); flex:1; }
+.inline-form .button { min-height:43px; }
+.metrics { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; margin:25px 0; }
+.metrics > div { background:var(--paper); padding:21px; display:flex; flex-direction:column; gap:8px; }
+.metrics span { color:var(--ink-soft); font-size:12px; }
+.metrics strong { font-size:clamp(17px,2vw,25px); font-variant-numeric:tabular-nums; overflow-wrap:anywhere; }
+.form-stack textarea { resize:vertical; }
+button:disabled { cursor:not-allowed; opacity:0.55; }
+@media(max-width:860px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:500px){.metrics{grid-template-columns:1fr}.inline-form{align-items:stretch}.inline-form .button{width:100%}}

@@ -78,6 +78,7 @@ export const orders=pgTable('orders',{
   refunded:bigint('refunded',{mode:'number'}).notNull(),
   net:bigint('net',{mode:'number'}).notNull(),
   checkoutLinkId:uuid('checkout_link_id').references(()=>checkoutLinks.id),
+  couponCode:varchar('coupon_code',{length:90}),
 },t=>[uniqueIndex('orders_site_external_unique').on(t.siteId,t.externalOrderId),index('orders_site_time_idx').on(t.siteId,t.orderedAt)]);
 export const costs=pgTable('campaign_costs',{
   id:uuid('id').primaryKey().defaultRandom(),
@@ -107,3 +108,33 @@ export const auditLogs=pgTable('audit_logs',{
   metadata:jsonb('metadata').$type<Record<string,string>>().notNull().default({}),
   createdAt:timestamp('created_at',{withTimezone:true}).notNull().defaultNow(),
 },t=>[index('audit_workspace_time_idx').on(t.workspaceId,t.createdAt)]);
+
+export const memberships = pgTable('memberships', {
+  workspaceId:uuid('workspace_id').notNull().references(()=>workspaces.id,{onDelete:'cascade'}),
+  userId:text('user_id').notNull(),
+  role:varchar('role',{length:20}).notNull().default('analyst'),
+},t=>[uniqueIndex('membership_unique').on(t.workspaceId,t.userId),index('memberships_user_idx').on(t.userId)]);
+export const couponCodes=pgTable('campaign_coupon_codes',{
+  id:uuid('id').primaryKey().defaultRandom(),
+  siteId:uuid('site_id').notNull().references(()=>sites.id),
+  campaignId:uuid('campaign_id').notNull().references(()=>campaigns.id),
+  code:varchar('code',{length:90}).notNull(),
+  active:boolean('active').notNull().default(true),
+},t=>[index('coupons_site_code_idx').on(t.siteId,t.code)]);
+export const imports=pgTable('imports',{
+  id:uuid('id').primaryKey().defaultRandom(),
+  siteId:uuid('site_id').notNull().references(()=>sites.id),
+  kind:varchar('kind',{length:24}).notNull(),
+  contentHash:varchar('content_hash',{length:64}).notNull(),
+  status:varchar('status',{length:25}).notNull(),
+  rowCount:integer('row_count').notNull(),
+  createdAt:timestamp('created_at',{withTimezone:true}).notNull().defaultNow(),
+},t=>[index('imports_site_time_idx').on(t.siteId,t.createdAt)]);
+export const deletionRequests=pgTable('deletion_requests',{
+  id:uuid('id').primaryKey().defaultRandom(),
+  siteId:uuid('site_id').notNull().references(()=>sites.id),
+  visitorId:uuid('visitor_id').references(()=>visitors.id),
+  status:varchar('status',{length:24}).notNull().default('pending'),
+  requestedAt:timestamp('requested_at',{withTimezone:true}).notNull().defaultNow(),
+  completedAt:timestamp('completed_at',{withTimezone:true}),
+});

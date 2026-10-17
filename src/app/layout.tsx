@@ -22,17 +22,20 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Link href="/" className="nav-link">Project overview</Link>
               <Link href="/lab" className="nav-link">Attribution workbench</Link>
               <Link href="/utm" className="nav-link">UTM link builder</Link>
+              <Link href="/console" className="nav-link">Workspace console</Link>
+              <Link href="/store" className="nav-link">Consent demo store</Link>
+              <Link href="/login" className="nav-link">Sign in</Link>
             </nav>
             <div className="sidebar-status">
               <span className="status-dot" aria-hidden="true" />
               <strong>Development preview</strong>
-              <p>Chưa kết nối đơn hàng hoặc dữ liệu quảng cáo thật.</p>
+              <p>Nếu đã cấu hình PostgreSQL, workspace console sử dụng database. Không có môi trường production.</p>
             </div>
           </aside>
           <div className="workspace">
             <header className="topbar">
               <span className="topbar-context">Hyu Industries / Measurement tools</span>
-              <span className="environment-label">SYNTHETIC LAB</span>
+              <span className="environment-label">LOCAL-FIRST MVP</span>
             </header>
             <main id="main-content" className="content">{children}</main>
             <footer className="page-footer">Rule-based attribution ≠ causal incrementality. No live tracking in this preview.</footer>
