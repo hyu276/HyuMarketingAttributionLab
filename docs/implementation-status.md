@@ -1,22 +1,26 @@
-# Implementation Status, 17 October 2026
+# Implementation Status
 
-| Phase | Status | Evidence / gap |
+## Status as of 17 October 2026
+
+This repo contains a substantial **local-first full-stack implementation candidate** on PR #2. The status of *real user data handling or hosted production* remains **NOT APPROVED**.
+
+| Area | Code implementation | Verification |
 |---|---|---|
-| P0 definitions | PARTIAL | Fixture and UI contract defined; production consent/retention decisions open |
-| P1 foundation | PARTIAL | Next.js and Drizzle scaffold drafted; dependencies, migrations, auth and build unverified |
-| P2 campaigns / UTM | PARTIAL | Working local link generation; persistent CRUD and permissions absent |
-| P3 consent SDK / collector | NOT IMPLEMENTED | No real visitor analytics |
-| P4 trusted orders / costs | NOT IMPLEMENTED | Demo order is fixed fixture only |
-| P5 attribution | PARTIAL | Pure engine and independent tests; no DB recomputation |
-| P6 reports | PARTIAL | Educational synthetic workbench, not live reporting |
-| P7 hardening | NOT IMPLEMENTED | No E2E, accessibility audit, deployment |
+| P0 measurement specs and golden fixtures | Present | Domain tests pass in GitHub CI |
+| P1 Next.js, PostgreSQL, Drizzle, Better Auth, membership | Present | Initial fullstack CI passed install, lint, typecheck, migration and build; E2E pending |
+| P2 sites/campaigns, UTM and coupon registry | Present | API and domain code, browser functional tests pending |
+| P3 opt-in SDK, collector, touchpoints/session | Present | Unit/browser consent negative checks pending; abuse not production hardened |
+| P4 trusted CSV import, spend and checkout tokens | Present | CSV tests passed; complex refund/concurrency and live commerce integration pending |
+| P5 first and last-non-direct attribution | Present | Pure golden tests passed; DB golden test added, pending CI |
+| P6 persisted analytics report and export UI | Present | Static build passed; E2E and accessibility pending |
+| P7 hardening and production | Partial | Real privacy/retention policy, production secrets, monitoring, backups and hosting not approved |
 
-## Observed checks
+## Observed GitHub evidence
 
-- Independent Node 22 TypeScript unit tests: 9/9 PASS in authoring workspace.
-- GitHub Actions run 39013420326: PASS for standalone domain tests and repository rules integrity on PR #2. This workflow does not run the Next build, PostgreSQL, auth or E2E.
-- Next install, typecheck, lint, build: NOT RUN (pnpm and dependencies unavailable).
-- Docker/Postgres/migrations and Playwright: NOT RUN (Docker/browser unavailable).
-- Dependency version compatibility and pnpm lockfile: UNVERIFIED.
+- [Fullstack CI 39033008753](https://github.com/hyu276/HyuMarketingAttributionLab/actions/runs/39033008753): PASS npm dependency install, ESLint, TypeScript, domain tests, CSV tests, Drizzle generate/migrate on PostgreSQL 16 and Next production build.
+- [Domain CI 39033008589](https://github.com/hyu276/HyuMarketingAttributionLab/actions/runs/39033008589): PASS domain tests and governance integrity.
+- New E2E/database integration tests still require a fresh final-head run. Do not use an older green CI result as proof for newer code.
 
-Never describe the app as production-ready until those exact gaps are closed.
+## Explicit non-goals
+
+No GA4/Ads API OAuth, multi-currency conversion, production cloud, incremental/causal ROAS claims, cross-device identity or probabilistic attribution. No production claim without legal/privacy review and full negative-case testing.

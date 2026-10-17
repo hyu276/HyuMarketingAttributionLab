@@ -55,11 +55,13 @@ export async function POST(req:NextRequest){
     if(Number(req.headers.get('content-length')||0)>8192)throw new ApiError(413,'TOO_LARGE','Event exceeds size limit');
     const body=await req.text();
     if(body.length>8192)throw new ApiError(413,'TOO_LARGE','Event exceeds size limit');
-    const input=schema.parse(JSON.parse(body));
+    let parsed:unknown;
+    try{parsed=JSON.parse(body);}catch{throw new ApiError(400,'INVALID_JSON','Malformed event payload');}
+    const input=schema.parse(parsed);
     const site=await lookup(input.site_key);
     const origin=req.headers.get('origin');
     if(!site?.active||!allowOrigin(origin,site.domains))throw new ApiError(403,'SITE_ORIGIN','Site or allowed origin not found');
-    throttle(site.id+':'+(req.headers.get('x-real-ip')||'anonymous'));
+    throttle(site.id);
     if(Math.abs(Date.now()-Date.parse(input.occurred_at))>5*60*1000)throw new ApiError(400,'CLOCK_SKEW','Event timestamp exceeds allowed skew');
     // Browser consent assertion is not independently verified: caller is untrusted telemetry only.
     const result=await db().transaction(async(tx)=>{
@@ -75,9 +77,10 @@ export async function POST(req:NextRequest){
         throw new ApiError(400,'SESSION_EXPIRED','Create a new session after inactivity');
       if(!session)[session]=await tx.insert(sessions).values({id:input.session_id,siteId:site.id,visitorId:visitor.id,startedAt:when,lastSeenAt:when}).returning();
       else if(when>session.lastSeenAt)await tx.update(sessions).set({lastSeenAt:when}).where(eq(sessions.id,session.id));
-      await tx.insert(events).values({siteId:site.id,eventId:input.event_id,visitorId:visitor.id,
+      const inserted=await tx.insert(events).values({siteId:site.id,eventId:input.event_id,visitorId:visitor.id,
         sessionId:session.id,eventName:input.event_name,occurredAt:when,path:input.page_path,
-        properties:input.properties??{}}).onConflictDoNothing();
+        properties:input.properties??{}}).onConflictDoNothing().returning({id:events.id});
+      if(!inserted.length)return {duplicate:true};
       if(input.event_name==='page_view'){
         const utm=input.utm;
         const [campaign]=utm?.id ? await tx.select().from(campaigns).where(and(eq(campaigns.siteId,site.id),eq(campaigns.utmId,utm.id))).limit(1) : [];

@@ -39,13 +39,17 @@ jobs:
         run: npm run typecheck
       - name: Domain tests
         run: npm test
-      - name: CSV and report tests
-        run: npm run test:integration
       - name: Generate migration from tracked schema (review before production)
         run: npm run db:generate
       - name: Apply migration to ephemeral Postgres
         run: npm run db:migrate
+      - name: Database integration and CSV/report tests
+        run: npm run test:integration
       - name: Build Next.js
         run: npm run build
+      - name: Install Chromium browser
+        run: npx playwright install --with-deps chromium
+      - name: End-to-end UI and workspace flows
+        run: npm run test:e2e
       - name: Governance integrity
         run: python3 scripts/check_repository_rules.py

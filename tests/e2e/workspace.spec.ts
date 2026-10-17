@@ -1,0 +1,23 @@
+import {test,expect} from '@playwright/test';
+test('auth, workspace, site and campaign persist via API',async({page})=>{
+  const email='mal-e2e-'+Date.now()+'@example.invalid';
+  await page.goto('/login');
+  await page.getByRole('button',{name:'Create an account'}).click();
+  await page.getByLabel('Name').fill('MAL Test User');
+  await page.getByLabel('Email').fill(email);
+  await page.getByLabel('Password').fill('integration-only-test-password-123');
+  await page.getByRole('button',{name:'Register'}).click();
+  await expect(page).toHaveURL(/\/console/,{timeout:30000});
+  await page.getByLabel('New workspace').fill('Test commerce workspace');
+  await page.getByRole('button',{name:'Create workspace'}).click();
+  await expect(page.getByText('Workspace created')).toBeVisible();
+  await page.getByLabel('Site name').fill('Demo Commerce');
+  await page.getByLabel('Allowed hostname').fill('localhost');
+  await page.getByRole('button',{name:'Add site'}).click();
+  await expect(page.getByText('Site created')).toBeVisible();
+  await page.getByLabel('Campaign name').fill('Autumn Laptop');
+  await page.getByLabel('UTM ID').fill('cmp_autumn_e2e');
+  await page.getByRole('button',{name:'Save campaign'}).click();
+  await expect(page.getByText('Campaign created')).toBeVisible();
+  await expect(page.getByRole('cell',{name:'Autumn Laptop'})).toBeVisible();
+});
