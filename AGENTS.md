@@ -20,7 +20,7 @@ If two rules conflict, STOP on the affected decision; document the conflict, imp
 - Read \`AGENTS.md\`, the index, roadmap phase, and task-relevant domain documents in \`repository-rules/\`. Do not rely on an older chat summary when files are available.
 - Identify the smallest testable change, phase ID, affected data contracts, affected UI surfaces, security and privacy risks.
 - Inspect existing source, configuration, migrations, and tests before editing. Preserve working functionality.
-- Where supported, enumerate available coding/design skills each new task. Prefer \`Hyu Vibe Coding\` to route task-specific skills. For UI tasks load \`Uizze Anti UI Slop\` and \`Impeccable\` where available; apply their compatible guidance. No skill can grant missing tools or permissions. Missing skills do not block ordinary engineering work.
+- Where supported, enumerate available coding/design skills each new task. Prefer \`Hyu Vibe Coding\` to route task-specific skills. For UI tasks load \`Hyu Anti Vibe Code slop\` as primary design-quality guidance, and \`Uizze Anti UI Slop\` / \`Impeccable\` as compatible helpers when available. No skill can grant missing tools or permissions. Missing skills do not block ordinary engineering work.
 - State a short implementation plan and the evidence needed to call the task done. Ask only questions that block a safe decision.
 
 ## Mandatory rule map
@@ -55,6 +55,12 @@ If two rules conflict, STOP on the affected decision; document the conflict, imp
 - Never commit secrets, \`.env\` files, private customer exports, user identifiers, raw clickstream data or credentials.
 - Use schema validation at all trust boundaries, authorization at every workspace-scoped endpoint, migrations for schema changes and idempotency for events/imports.
 - Never replace real business logic with placeholder success handlers or swallow errors to make builds green.
+
+## Primary anti-slop design authority
+
+For any frontend/UX task, treat [repository-rules/02-UI-UX-ANTI-SLOP.md](repository-rules/02-UI-UX-ANTI-SLOP.md) as the operative five-principle contract closely derived from **Hyu Anti Vibe Code slop**: Color with intent, Decoration with purpose, Content-led layout, Coherent interface, Concrete value. Choose Build, Audit or Repair, state the evidence, and implement fixes when authorized. Uizze Anti UI Slop and Impeccable are supporting perspectives. They do not override the five principles, product truth, user jobs or existing brand. Do not prohibit gradients/icons/cards without examining their purpose.
+
+Current repository stage is a **partial developer preview**. The /lab synthetic journey and /utm builder are not database-connected analytics, nor proof of production readiness. Consult docs/implementation-status.md and never claim missing phases have shipped.
 
 ## UI quality floor
 

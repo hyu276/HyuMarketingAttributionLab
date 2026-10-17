@@ -1,0 +1,35 @@
+{
+  "name": "hyu-marketing-attribution-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test tests/unit/*.test.ts",
+    "test:unit": "node --experimental-strip-types --test tests/unit/*.test.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "next": "15.5.6",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "drizzle-orm": "0.44.6",
+    "pg": "8.16.3"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "3.3.1",
+    "@types/node": "22.16.0",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "9.38.0",
+    "eslint-config-next": "15.5.6",
+    "typescript": "5.9.3",
+    "drizzle-kit": "0.31.5",
+    "@types/pg": "8.15.5"
+  }
+}
