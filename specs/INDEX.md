@@ -13,3 +13,5 @@ Based on the approved MVP roadmap; implementation statuses must reflect observed
 | [quality-privacy](quality-privacy/spec.md) | Implementation in progress | See individual spec |
 
 Status note: content is a scoped contract, not a claim that all behaviors are implemented.
+
+| [netlify-hosting](netlify-hosting/spec.md) | PARTIAL (Netlify project + config, deployment pending) | Persistent Postgres, Git linking, consent/privacy gates |

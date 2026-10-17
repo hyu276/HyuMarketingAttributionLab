@@ -152,3 +152,6 @@ vite.config.ts.timestamp-*
 playwright-report/
 test-results/
 playwright/.cache/
+
+# Netlify local project link state (may contain local metadata)
+.netlify/

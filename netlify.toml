@@ -1,0 +1,12 @@
+# Next.js App Router: Netlify's automatic OpenNext adapter serves SSR/API routes.
+# Do not add an SPA catch-all redirect or use a static export.
+[build]
+  command = "npm ci && npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Runtime secrets (DATABASE_URL, BETTER_AUTH_SECRET, CHECKOUT_SERVER_KEY)
+# must be provisioned in Netlify environment variables, NEVER in this file.
+# Do not turn off Netlify's secrets scanning.
