@@ -44,9 +44,11 @@ Only workspace admin can call:
 ## Reports
 
 - \`GET /api/v1/reports/overview?siteId=<uuid>&from=YYYY-MM-DD&to=YYYY-MM-DD&model=first_touch&windowDays=7\`.
-- \`GET /api/v1/reports/export?siteId=<uuid>&from=YYYY-MM-DD&to=YYYY-MM-DD&model=first_touch\`: CSV with spreadsheet-formula escaping, fixed 7-day model.
+- \`GET /api/v1/reports/export?siteId=<uuid>&from=YYYY-MM-DD&to=YYYY-MM-DD&model=first_touch&windowDays=7\`: CSV with spreadsheet-formula escaping and the same 1/7/30-day lookback as overview.
 - Reports select trusted orders and site-scoped touchpoints; order date grouped in workspace timezone; no multi-currency conversion.
 - Every model represents the same observed order revenue. Unassigned and coupon fallback are explicit. Spend absent -> ROAS N/A.
+- Overview returns \`comparison.firstTouch\` and \`comparison.lastNonDirectTouch\` over the same eligible order ledger. These are alternative allocations, never additive revenue. \`dataQuality\` includes latest completed CSV import timestamps and event/spend-row counts in the date window.
+- Campaign \`verifiedAttributedRevenueVnd\` and ROAS exclude coupon fallback; \`couponRevenueVnd\` is separate. The legacy \`attributedRevenueVnd\` field retains the combined verified and coupon credit for existing clients.
 - Large datasets yield explicit \`REPORT_TOO_LARGE\` rather than silently truncated totals.
 
 ## Privacy

@@ -49,7 +49,14 @@ test('DB attribution reconciles a real stored journey without crossing sites',as
   assert.equal(last.totals.observedRevenueVnd,900000);
   assert.equal(first.orders[0].attribution.campaignId,fb.id);
   assert.equal(last.orders[0].attribution.campaignId,google.id);
+  assert.equal(first.comparison.firstTouch.verifiedAttributedRevenueVnd,900000);
+  assert.equal(first.comparison.lastNonDirectTouch.verifiedAttributedRevenueVnd,900000);
+  assert.equal(first.comparison.firstTouch.unassignedRevenueVnd,0);
+  assert.equal(first.dataQuality.lastOrderImportAt,null); // Direct fixture insert is not a completed CSV import.
+  assert.equal(first.dataQuality.spendRowCount,1);
   assert.equal(first.totals.roas,3);
   assert.equal(last.totals.roas,3); // Blended site-level ROAS includes total site spend
+  assert.equal(first.campaigns.find(c=>c.id===fb.id)?.verifiedAttributedRevenueVnd,900000);
+  assert.equal(last.campaigns.find(c=>c.id===google.id)?.verifiedAttributedRevenueVnd,900000);
   assert.equal(last.campaigns.find(c=>c.id===google.id)?.roas,null); // Campaign with no spend is N/A
 });

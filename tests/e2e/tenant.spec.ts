@@ -15,6 +15,7 @@ test('workspace/site/report reads reject unauthenticated and foreign members',as
     const [signupA]=await Promise.all([pageA.waitForResponse(r=>r.url().includes('/api/auth/sign-up/email')),pageA.getByRole('button',{name:'Register'}).click()]);
     expect(signupA.ok(),await signupA.text()).toBe(true);
     await expect(pageA).toHaveURL(/\/console/,{timeout:15000});
+    await pageA.getByRole('button',{name:'Workspace setup',exact:true}).click();
     await pageA.getByLabel('New workspace').fill('Tenant A workspace');
     await pageA.getByRole('button',{name:'Create workspace'}).click();
     await expect(pageA.getByText('Workspace created')).toBeVisible();

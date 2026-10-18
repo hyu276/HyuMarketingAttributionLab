@@ -11,6 +11,7 @@ An explainable, local-first marketing attribution application. **Full-stack MVP 
 - Order and ad spend CSV preview + commit, stable idempotency keys.
 - First-touch and last-non-direct attribution, coupon fallback, unassigned reporting.
 - Site-scoped reports, funnel event counts, model comparison and sanitized CSV export.
+- Operational console sections for overview, attribution, campaigns/registered UTM links, imports and workspace setup. Report lookback, model and date filters also apply to CSV export.
 - Drizzle/PostgreSQL schema draft, automated lint/type/build, migration smoke, unit and E2E tests.
 
 ## Local Quick Start
@@ -19,8 +20,8 @@ Preconditions: Node.js 22, npm with the checked-in package-lock.json, Docker Eng
 
 1. Copy \`.env.example\` to \`.env.local\` and replace *all* placeholder secrets.
 2. Export the chosen \`POSTGRES_PASSWORD\` from \`.env.local\` to your terminal, or invoke \`docker compose --env-file .env.local up -d db\`.
-3. Run \`npm install\` (until verified pnpm lockfile exists).
-4. Run \`npm run db:generate\`, review generated SQL, and then \`npm run db:migrate\`.
+3. Run \`npm ci\` using the checked-in npm lockfile.
+4. Run \`npm run db:migrate\` using the checked-in migration. Generate and review a new migration only after a schema change.
 5. Run \`npm run dev\`; open http://localhost:3000/login.
 6. Sign up locally; create a workspace, a site with hostname \`localhost\`, and a campaign.
 7. To test consent events, open /store?site_key=<site public key>, then explicitly Accept or Reject tracking.
@@ -36,7 +37,7 @@ Preconditions: Node.js 22, npm with the checked-in package-lock.json, Docker Eng
 - \`npm run test:e2e\` (requires Playwright Chromium)
 - \`python3 scripts/check_repository_rules.py\`
 
-CI runs these on a disposable GitHub PostgreSQL 16 service. Only report PASS for a check actually verified against the latest commit. Existing GitHub Actions workflow starts with \`npm install\`; a lockfile is still a release blocker.
+CI runs these on a disposable GitHub PostgreSQL 16 service. Only report PASS for a check actually verified against the latest commit. The checked-in npm lockfile should be installed with \`npm ci\` on fresh checkouts.
 
 ## Scope limitations
 

@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('auth, workspace, site and campaign persist via API',async({page})=>{
+  test.setTimeout(90000);
   const email='mal-e2e-'+Date.now()+'@example.invalid';
   await page.goto('/login');
   await page.getByRole('button',{name:'Create an account'}).click();
@@ -8,6 +9,7 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await page.getByLabel('Password').fill('integration-only-test-password-123');
   await page.getByRole('button',{name:'Register'}).click();
   await expect(page).toHaveURL(/\/console/,{timeout:30000});
+  await page.getByRole('button',{name:'Workspace setup',exact:true}).click();
   await page.getByLabel('New workspace').fill('Test commerce workspace');
   const [response]=await Promise.all([page.waitForResponse(r=>r.url().includes('/api/v1/workspaces')&&r.request().method()==='POST'),page.getByRole('button',{name:'Create workspace'}).click()]);
   expect(response.status(),await response.text()).toBe(201);
@@ -16,18 +18,34 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await page.getByLabel('Allowed hostname').fill('localhost');
   await page.getByRole('button',{name:'Add site'}).click();
   await expect(page.getByText('Site created')).toBeVisible();
+  await page.getByRole('button',{name:'Campaigns & UTM'}).click();
   await page.getByLabel('Campaign name').fill('Autumn Laptop');
   await page.getByLabel('UTM ID').fill('cmp_autumn_e2e');
   await page.getByRole('button',{name:'Save campaign'}).click();
   await expect(page.getByText('Campaign created')).toBeVisible();
   await expect(page.getByRole('cell',{name:'Autumn Laptop'}).first()).toBeVisible();
+  await page.getByLabel('Coupon code').fill('AUTUMN10');
+  await page.locator('section').filter({has:page.getByRole('heading',{name:'Coupon fallback mapping'})})
+    .locator('select').selectOption({label:'Autumn Laptop'});
+  await page.getByRole('button',{name:'Save coupon mapping'}).click();
+  await expect(page.getByText('Coupon mapping saved')).toBeVisible();
+  await expect(page.getByRole('cell',{name:'AUTUMN10'})).toBeVisible();
+  await page.getByRole('button',{name:'Orders & spend'}).click();
   const csv='order_id,ordered_at,status,currency,gross_item_revenue,discount_amount,refunded_amount,checkout_token,discount_code\nORD-E2E-001,2026-10-06T12:00:00Z,paid,VND,1000000,100000,0,,';
   await page.getByLabel('CSV data').fill(csv);
   await page.getByRole('button',{name:'Preview CSV'}).click();
   await expect(page.getByText('1 rows, ready')).toBeVisible();
   await page.getByRole('button',{name:'Commit import'}).click();
   await expect(page.getByText('1 rows imported')).toBeVisible();
+  await page.getByRole('button',{name:'Attribution',exact:true}).click();
+  await page.getByLabel('From',{exact:true}).fill('2026-10-01');
+  await page.getByLabel('To',{exact:true}).fill('2026-10-31');
   await expect(page.getByRole('cell',{name:'ORD-E2E-001'})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Model comparison'})).toBeVisible();
+  await page.getByLabel('Lookback').selectOption('30');
+  const exportLink=page.getByRole('link',{name:'Export orders CSV'});
+  await expect(exportLink).toHaveAttribute('href',/windowDays=30/);
+  await page.getByRole('button',{name:'Orders & spend'}).click();
   await page.getByRole('button',{name:'Preview CSV'}).click();
   await page.getByRole('button',{name:'Commit import'}).click();
   await expect(page.getByText('No change: identical import previously committed')).toBeVisible();

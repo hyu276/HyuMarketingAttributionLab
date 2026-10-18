@@ -7,19 +7,19 @@ export default function Home() {
       <section className="hero">
         <div>
           <h1>Trace where a conversion gets its credit.</h1>
-          <p className="lead">So sánh First-touch và Last-non-direct-touch trên cùng một đơn hàng có dữ liệu minh họa. Mục tiêu không phải phóng đại hiệu quả quảng cáo, mà là giải thích chính xác vì sao một nguồn được ghi nhận.</p>
+          <p className="lead">So sánh First-touch và Last-non-direct-touch trên cùng một tập đơn hàng. Console sử dụng dữ liệu từ PostgreSQL khi được cấu hình; workbench minh họa dùng tình huống tổng hợp được gắn nhãn rõ ràng.</p>
           <div className="action-row">
-            <Link href="/lab" className="button button-primary">Mở Attribution Workbench <span aria-hidden="true">↗</span></Link>
-            <Link href="/utm" className="button button-secondary">Tạo liên kết UTM</Link>
+            <Link href="/console" className="button button-primary">Mở workspace console <span aria-hidden="true">↗</span></Link>
+            <Link href="/lab" className="button button-secondary">Xem kịch bản minh họa</Link>
           </div>
         </div>
         <div className="hero-proof" aria-label="Production readiness">
           <p className="overline">CURRENT DELIVERY</p>
-          <p className="proof-heading">Rule engine <strong>available</strong></p>
-          <p>Domain functions và test scenario độc lập đã được xây dựng. Database, authentication, tracker và reports chưa vận hành.</p>
+          <p className="proof-heading">Local app <strong>available</strong></p>
+          <p>Code hiện có gồm xác thực, PostgreSQL, bộ thu thập có consent, nhập CSV và báo cáo. Cần cấu hình môi trường cục bộ để vận hành.</p>
           <div className="hairline" />
           <p className="overline">DATA STATUS</p>
-          <strong className="data-label">100% synthetic fixture</strong>
+          <strong className="data-label">Lab: synthetic · Console: workspace data</strong>
         </div>
       </section>
       <section aria-labelledby="pipeline-heading">
@@ -31,13 +31,13 @@ export default function Home() {
         </div>
       </section>
       <section aria-labelledby="status-heading">
-        <div className="section-heading"><h2 id="status-heading">Implementation status</h2><p>Tiến độ minh bạch thay vì hiển thị dashboard số giả.</p></div>
+        <div className="section-heading"><h2 id="status-heading">Implementation status</h2><p>Đã có code full stack cục bộ; chưa phải hệ thống production.</p></div>
         <div className="table-scroll"><table><thead><tr><th>Capability</th><th>Current state</th><th>Next dependency</th></tr></thead><tbody>
-          <tr><td>Attribution rules</td><td><span className="tag tag-ready">Pure functions</span></td><td>Trusted database pipeline</td></tr>
-          <tr><td>UTM URL creation</td><td><span className="tag tag-ready">Local builder</span></td><td>Authenticated campaign registry</td></tr>
-          <tr><td>Order import and spend</td><td><span className="tag tag-pending">Not implemented</span></td><td>Auth, PostgreSQL, CSV validation</td></tr>
-          <tr><td>Consent and event collection</td><td><span className="tag tag-pending">Not implemented</span></td><td>Consent policy and collection API</td></tr>
-          <tr><td>Live reporting</td><td><span className="tag tag-pending">Not implemented</span></td><td>Verified transactions and reporting queries</td></tr>
+          <tr><td>Attribution rules</td><td><span className="tag tag-ready">Implemented locally</span></td><td>Production validation</td></tr>
+          <tr><td>UTM URL creation</td><td><span className="tag tag-ready">Local and registered builder</span></td><td>Production validation</td></tr>
+          <tr><td>Order import and spend</td><td><span className="tag tag-ready">CSV preview and commit</span></td><td>Trusted commerce integration</td></tr>
+          <tr><td>Consent and event collection</td><td><span className="tag tag-ready">Local collector</span></td><td>Legal policy and abuse controls</td></tr>
+          <tr><td>Workspace reporting</td><td><span className="tag tag-ready">Database-backed</span></td><td>Scale and accessibility review</td></tr>
         </tbody></table></div>
       </section>
     </div>
