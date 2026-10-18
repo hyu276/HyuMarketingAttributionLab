@@ -4,7 +4,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Marketing Attribution Lab | Measurement workbench',
-  description: 'Explore deterministic first-touch and last-non-direct attribution rules with an explicitly synthetic scenario.',
+  description: 'Local-first marketing attribution console for trusted orders, consented events and explainable campaign reporting.',
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -38,7 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <span className="environment-label">LOCAL-FIRST MVP</span>
             </header>
             <main id="main-content" className="content">{children}</main>
-            <footer className="page-footer">Rule-based attribution ≠ causal incrementality. No live tracking in this preview.</footer>
+            <footer className="page-footer">Rule-based attribution ≠ causal incrementality. Local preview only; no public backend is deployed.</footer>
           </div>
         </div>
       </body>

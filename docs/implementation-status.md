@@ -1,5 +1,26 @@
 # Implementation Status
 
+## Local MAL-012 upgrade, 18 October 2026
+
+The operational console now separates workspace setup, campaign and UTM work, trusted CSV imports, overview, and attribution analysis. Reports expose both model summaries over the same order ledger, import freshness, separate coupon credit, and a 1/7/30-day lookback shared with CSV export. The introduction page no longer claims the implemented backend is missing.
+
+This branch is a local development artifact. Its production, integration, E2E, accessibility, and security status must be judged by the current branch's checks; the older CI runs listed below do not verify these changes. No public backend has been deployed.
+
+### Local verification on this branch
+
+- PASSED: `npm ci --no-audit --no-fund`, `npm run db:generate` (no schema drift), `npm run lint`, `npm run typecheck`, `npm test` (9/9), `npx tsx --test tests/integration/imports-report.test.ts` (4/4 pure CSV/report tests), and `npm run build` with nonfunctional local build-time database/auth environment variables.
+- PASSED: `npm audit --omit=dev --audit-level=moderate` (0 reported production dependency advisories), repository rule checker, and `git diff --check`.
+- UI review: rendered a synthetic, test-only API fixture at 390, 768, 1280 and 1440 CSS pixels. No page-level horizontal overflow or browser exceptions were observed. Tab navigation and a registered UTM link were exercised. This fixture does not verify real database behavior.
+- BLOCKED locally: PostgreSQL integration tests, migrated database smoke, and database-backed Playwright E2E, because this machine has no Docker/PostgreSQL service. Full `npm audit` still reports five high advisories through the development-only Next.js ESLint dependency chain; no patched compatible version was available from the registry during this run.
+
+### UI repair record
+
+| Location / evidence | User impact | Decision and change | Verification |
+|---|---|---|---|
+| Console source placed all operations in one long page and fixed October 2026 dates | Hard to locate tasks; future reports initially empty | Separate task sections, default dates to current month, expose model/lookback/date context | Browser fixture at four widths; source and build checks |
+| Intro page claimed backend and reporting were absent | Misstated actual implementation | Replace with local full-stack status and production caveat | Source review and rendered public route |
+| Campaign revenue mixed verified and coupon fallback while ROAS used verified credit | Hard to reconcile campaign figures | Add distinct fields, preserve legacy combined field, explain ROAS basis | API contract review; DB integration assertions added but not run locally |
+
 ## Status as of 17 October 2026
 
 This repo contains a substantial **local-first full-stack implementation candidate** on PR #2. The status of *real user data handling or hosted production* remains **NOT APPROVED**.
