@@ -8,6 +8,7 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await page.getByLabel('Password').fill('integration-only-test-password-123');
   await page.getByRole('button',{name:'Register'}).click();
   await expect(page).toHaveURL(/\/console/,{timeout:30000});
+  await page.getByRole('button',{name:'Workspace setup'}).click();
   await page.getByLabel('New workspace').fill('Test commerce workspace');
   const [response]=await Promise.all([page.waitForResponse(r=>r.url().includes('/api/v1/workspaces')&&r.request().method()==='POST'),page.getByRole('button',{name:'Create workspace'}).click()]);
   expect(response.status(),await response.text()).toBe(201);
