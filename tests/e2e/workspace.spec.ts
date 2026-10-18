@@ -24,7 +24,8 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await expect(page.getByText('Campaign created')).toBeVisible();
   await expect(page.getByRole('cell',{name:'Autumn Laptop'}).first()).toBeVisible();
   await page.getByLabel('Coupon code').fill('AUTUMN10');
-  await page.getByLabel('Campaign', {exact:true}).selectOption({label:'Autumn Laptop'});
+  await page.locator('section').filter({has:page.getByRole('heading',{name:'Coupon fallback mapping'})})
+    .locator('select').selectOption({label:'Autumn Laptop'});
   await page.getByRole('button',{name:'Save coupon mapping'}).click();
   await expect(page.getByText('Coupon mapping saved')).toBeVisible();
   await expect(page.getByRole('cell',{name:'AUTUMN10'})).toBeVisible();
