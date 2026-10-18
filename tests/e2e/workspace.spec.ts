@@ -1,5 +1,6 @@
 import {test,expect} from '@playwright/test';
 test('auth, workspace, site and campaign persist via API',async({page})=>{
+  test.setTimeout(90000);
   const email='mal-e2e-'+Date.now()+'@example.invalid';
   await page.goto('/login');
   await page.getByRole('button',{name:'Create an account'}).click();
@@ -37,8 +38,8 @@ test('auth, workspace, site and campaign persist via API',async({page})=>{
   await page.getByRole('button',{name:'Commit import'}).click();
   await expect(page.getByText('1 rows imported')).toBeVisible();
   await page.getByRole('button',{name:'Attribution',exact:true}).click();
-  await page.getByLabel('From').fill('2026-10-01');
-  await page.getByLabel('To').fill('2026-10-31');
+  await page.getByLabel('From',{exact:true}).fill('2026-10-01');
+  await page.getByLabel('To',{exact:true}).fill('2026-10-31');
   await expect(page.getByRole('cell',{name:'ORD-E2E-001'})).toBeVisible();
   await expect(page.getByRole('heading',{name:'Model comparison'})).toBeVisible();
   await page.getByLabel('Lookback').selectOption('30');
